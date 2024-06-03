@@ -1,0 +1,16 @@
+footer {
+	display: flex;
+	justify-content: space-evenly;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	background-color: #eee;
+}
+
+.box {
+	text-align: center;
+	flex: 1;
+	padding: 10px;
+	border-right: 1px solid #ccc;
+
+}
