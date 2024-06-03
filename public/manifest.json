@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Blame",
+  "name": "Report code for plagiarism",
   "icons": [
     {
       "src": "favicon.ico",
