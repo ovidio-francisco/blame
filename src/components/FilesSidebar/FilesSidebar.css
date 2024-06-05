@@ -3,10 +3,8 @@ aside {
   color: #333;
   padding: 20px;
   width: 200px;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
+  height: auto;
   overflow-y: auto;
   border-right: 1px solid #ccc;
+  border-top: 1px solid #ccc;
 }
