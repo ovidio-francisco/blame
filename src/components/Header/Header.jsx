@@ -1,12 +1,17 @@
 import React from 'react';
+import styled from 'styled-components';
 
-import './Header.css';
+const HeaderWrapper = styled.header`
+	h1 {
+		margin: 4px;
+	}
+`;
 
 const Header = () => {
 	return (
-		<header>
+		<HeaderWrapper>
 			<h1>Header aqui!</h1>
-		</header>
+		</HeaderWrapper>
 	);
 };
 
