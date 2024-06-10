@@ -5,18 +5,29 @@ import Main   from '../Main/Main';
 import Footer from '../Footer/Footer';
 import FilesSidebar from '../FilesSidebar/FilesSidebar';
 
-import './App.css';
+import styled from 'styled-components';
+
+const AppWrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+`;
+
+const Content = styled.div`
+	display: flex;
+	flex: 1;
+`;
 
 const App = () => {
 	return (
-		<div className='app'>
+		<AppWrapper>
 		<Header /> 
-			<div className='content'>
-				<FilesSidebar />
-				<Main /> 
-			</div>
-			<Footer /> 
-		</div>
+		<Content>
+			<FilesSidebar />
+			<Main /> 
+		</Content>
+		<Footer /> 
+		</AppWrapper>
 	);
 }
 
