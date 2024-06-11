@@ -11,24 +11,16 @@ const AppWrapper = styled.div`
 	display: flex;
 	flex-direction: column;
 	min-height: 100vh;
+
+	padding: 15px;
+	gap: 15px;
 `;
 
 const Content = styled.div`
 	display: flex;
 	flex: 1;
-`;
 
-// Styled component for the sidebar
-const StyledFilesSidebar = styled.div`
-	flex: 1; /* Sidebar takes 1 part of the available space */
-	max-width: 250px; /* Optional: set a maximum width for the sidebar */
-	background-color: blue;
-`;
-
-// Styled component for the main content
-const StyledMain = styled.div`
-	flex: 3; /* Main content takes 3 parts of the available space */
-	background-color: yellow;
+	gap: 15px;
 `;
 
 
@@ -38,6 +30,8 @@ const App = () => {
 			<Header /> 
 			<Content>
 				<FilesSidebar />
+				<Main /> 
+				<Main /> 
 				<Main /> 
 			</Content>
 			<Footer /> 

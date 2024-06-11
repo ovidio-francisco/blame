@@ -9,7 +9,7 @@ const MainWrapper = styled.main`
 
 	div {
 		text-align: center;
-		width: 100%;
+		flex: 1;
 	}
 `;
 

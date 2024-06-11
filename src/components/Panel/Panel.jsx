@@ -4,7 +4,17 @@ import styled from 'styled-components';
 const PanelWrapper = styled.div`
 	display: flex;
 	flex: ${({flex}) => flex || 'initial'};
-	border: 1px solid red;
+
+	background-color: #fff;
+
+	border-radius: 8px; 
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+	{/*
+	  * margin: 5px;
+	  */}
+	padding: 4px;
+
 `;
 
 
