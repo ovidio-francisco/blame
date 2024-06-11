@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import Panel from '../Panel/Panel'
+
 const HeaderWrapper = styled.header`
 	h1 {
 		margin: 4px;
@@ -9,9 +11,11 @@ const HeaderWrapper = styled.header`
 
 const Header = () => {
 	return (
-		<HeaderWrapper>
-			<h1>Header aqui!</h1>
-		</HeaderWrapper>
+		<Panel>
+			<HeaderWrapper>
+				<h1>Header aqui!</h1>
+			</HeaderWrapper>
+		</Panel>
 	);
 };
 

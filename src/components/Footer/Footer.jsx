@@ -1,28 +1,26 @@
 import React from 'react';
-// import './Footer.css';
 import styled from 'styled-components'
 
+import Panel from '../Panel/Panel'
 
 const FooterWrapper = styled.footer`
 	display: flex;
 	justify-content: space-evenly;
-	border: 1px solid #ccc;
-	background-color: #eee;
 
 	div {
 		text-align: center;
-		flex: 1;
 		padding: 4px;
-		border-right: 1px solid #ccc;
 	}
 `;
 
 
 const Footer = () => {
 	return (
-		<FooterWrapper>
-			<div>Blame</div>
-		</FooterWrapper>
+		<Panel>
+			<FooterWrapper>
+				<div>Blame</div>
+			</FooterWrapper>
+		</Panel>
 	);
 };
 

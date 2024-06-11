@@ -1,11 +1,25 @@
 import React from 'react';
+import styled from 'styled-components'
 
+import Panel from '../Panel/Panel'
+
+const MainWrapper = styled.main`
+	display: flex;
+	flex: 6;
+
+	div {
+		text-align: center;
+		width: 100%;
+	}
+`;
 
 const Main = () => {
 	return (
-		<main>
-			<h1>Main content!</h1>
-		</main>
+			<MainWrapper>
+		<Panel>
+				<div>Main content!</div>
+		</Panel>
+			</MainWrapper>
 	);
 };
 

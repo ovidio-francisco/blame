@@ -1,28 +1,29 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import Panel from '../Panel/Panel'
 
 const FilesSidebarWrapper = styled.aside`
-  background-color: #f0f0f0;
-  color: #333;
-  width: 200px;
-  height: auto;
-  border-right: 1px solid #ccc;
-  border-top: 1px solid #ccc;
+	display: flex;
+	flex: 1;
+	
+	div {
+		text-align: center;
+		width: 100%;
+	}
 `;
-
 
 const FilesSidebar = () => {
 	return (
-		<FilesSidebarWrapper>
-			
-			<h2>Files</h2>	
-			
-		</FilesSidebarWrapper>
+			<FilesSidebarWrapper>
+		<Panel>
+				
+				<h2>Files</h2>	
+				
+		</Panel>
+			</FilesSidebarWrapper>
 	);
 };
 
 export default FilesSidebar;
-
-
 
