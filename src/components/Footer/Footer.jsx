@@ -6,6 +6,7 @@ import Panel from '../Panel/Panel'
 const FooterWrapper = styled.footer`
 	display: flex;
 	justify-content: space-evenly;
+	flex: 1;
 
 	div {
 		text-align: center;
@@ -19,6 +20,8 @@ const Footer = () => {
 		<Panel>
 			<FooterWrapper>
 				<div>Blame</div>
+				<div>Culpa</div>
+				<div>Culpado</div>
 			</FooterWrapper>
 		</Panel>
 	);

@@ -15,13 +15,13 @@ const FilesSidebarWrapper = styled.aside`
 
 const FilesSidebar = () => {
 	return (
+		<Panel flex="1">
 			<FilesSidebarWrapper>
-		<Panel>
 				
 				<h2>Files</h2>	
 				
-		</Panel>
 			</FilesSidebarWrapper>
+		</Panel>
 	);
 };
 

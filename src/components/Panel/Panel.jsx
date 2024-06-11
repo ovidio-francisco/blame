@@ -2,13 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 
 const PanelWrapper = styled.div`
-  border: 1px solid red;
+	display: flex;
+	flex: ${({flex}) => flex || 'initial'};
+	border: 1px solid red;
 `;
 
 
-const Panel = ({children}) => {
+const Panel = ({ children, flex }) => {
 	return (
-		<PanelWrapper>
+		<PanelWrapper flex={flex}>
 			{children}
 		</PanelWrapper>
 	);

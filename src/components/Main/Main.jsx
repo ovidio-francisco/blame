@@ -5,7 +5,7 @@ import Panel from '../Panel/Panel'
 
 const MainWrapper = styled.main`
 	display: flex;
-	flex: 6;
+	flex: 1;
 
 	div {
 		text-align: center;
@@ -15,11 +15,11 @@ const MainWrapper = styled.main`
 
 const Main = () => {
 	return (
+		<Panel flex="3">
 			<MainWrapper>
-		<Panel>
 				<div>Main content!</div>
-		</Panel>
 			</MainWrapper>
+		</Panel>
 	);
 };
 
