@@ -10,16 +10,16 @@ import styled from 'styled-components';
 const AppWrapper = styled.div`
 	display: flex;
 	flex-direction: column;
-	min-height: 100vh;
+	min-height: 96vh;
 
-	gap: 15px;
+	gap: 2vh;
 `;
 
 const Content = styled.div`
 	display: flex;
 	flex: 1;
 
-	gap: 15px;
+	gap: 2vh;
 `;
 
 

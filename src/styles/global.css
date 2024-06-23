@@ -1,6 +1,9 @@
 body {
-  margin: 0;
-  font-family: 'YourFontFamily', sans-serif;
+  /* margin: 0; */
+  margin: 2vh;
+  /* padding: 15px; */
+  /* gap: 3vh; */
+  font-family: 'Arial', sans-serif;
   background-color: #ebebeb;
-  min-height: 100vh;
+  /* min-height: 100vh; */
 }
