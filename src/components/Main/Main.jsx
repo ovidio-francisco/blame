@@ -5,7 +5,8 @@ import Files  from '../Files/Files';
 import Similarities  from '../Similarities/Similarities';
 
 const MainWrapper = styled.main`
-	flex: 1;
+	overflow: hidden;
+	height: 100%;
 	display: flex;
 	flex-direction: row;
 	border: 1px solid black;

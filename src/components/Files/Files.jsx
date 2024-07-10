@@ -1,8 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import VerticalScrollable  from '../VerticalScrollable/VerticalScrollable';
+
 const FilesWrapper = styled.div`
 	flex: 1;
+	overflow: hidden;
+	display: flex;
+	flex-direction: row;
 
 `;
 
@@ -14,6 +19,7 @@ const Files = () => {
 			<FilesWrapper>
 			
 				Files
+			<VerticalScrollable />
 				
 			</FilesWrapper>
 		// </Panel>
