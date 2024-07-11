@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 
 const SimilaritiesWrapper = styled.div`
-
-	flex: 3;
+	width: 100%;
+	border: 1px solid black;
 `;
 
 
@@ -17,4 +17,7 @@ const Similarities = () => {
 }
 
 export default Similarities;
+
+
+
 
