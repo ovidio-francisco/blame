@@ -3,7 +3,8 @@ import styled from 'styled-components';
 
 const ScrollableContainer = styled.div`
 	width: 100%;
-	overflow: auto;
+	overflow-y: auto;
+	overflow-x: hidden;
 `;
 
 const VerticalScrollable = ({ children }) => {

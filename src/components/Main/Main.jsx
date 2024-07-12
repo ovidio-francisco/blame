@@ -9,7 +9,7 @@ const MainWrapper = styled.main`
 	height: 100%;
 	display: flex;
 	flex-direction: row;
-	border: 1px solid black;
+	// border: 1px solid black;
 `;
 
 
