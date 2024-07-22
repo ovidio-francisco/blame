@@ -1,16 +1,37 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import Auth from '../Auth/Auth';
+import Panel from '../Panel/Panel';
+
+
 const HeaderWrapper = styled.header`
-	margin: 4px;
+	display: flex;
 	text-align: center;
+
+	align-items: center;
+	justify-content: center;
+
+	nav {
+		width: 100%;
+	}
+
+	h1 {
+		margin: 0;
+	}
 `;
 
 const Header = () => {
 	return (
-			<HeaderWrapper>
-				Header aqui!
-			</HeaderWrapper>
+		<HeaderWrapper>
+		<Panel flex="1">
+
+			<h1>Blame</h1>
+			<nav>
+				<Auth />
+			</nav>
+		</Panel>
+	</HeaderWrapper>
 	);
 };
 

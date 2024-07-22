@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import Panel from '../Panel/Panel'
+import DirectoryUpload from '../DirectoryUpload/DirectoryUpload'
 import VerticalScrollable  from '../VerticalScrollable/VerticalScrollable';
 
-import Panel from '../Panel/Panel'
 
 const FilesWrapper = styled.div`
 	min-width: 20%;
@@ -18,7 +19,7 @@ const Files = () => {
 		<FilesWrapper>
 			<Panel flex="1">
 				<VerticalScrollable>
-		Files
+					Files
 
 					<ul>
 						{Array.from({ length: 60 }, (_, i) => (
@@ -28,7 +29,7 @@ const Files = () => {
 
 				</VerticalScrollable>
 				<footer>
-					<button>Open Files</button>	
+					<DirectoryUpload />
 				</footer>
 			</Panel>
 		</FilesWrapper>
