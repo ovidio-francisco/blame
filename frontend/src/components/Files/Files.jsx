@@ -18,8 +18,10 @@ const Files = () => {
 	return (
 		<FilesWrapper>
 			<Panel flex="1">
+				<header>
+					<DirectoryUpload />
+				</header>
 				<VerticalScrollable>
-					Files
 
 					<ul>
 						{Array.from({ length: 60 }, (_, i) => (
@@ -29,7 +31,6 @@ const Files = () => {
 
 				</VerticalScrollable>
 				<footer>
-					<DirectoryUpload />
 				</footer>
 			</Panel>
 		</FilesWrapper>
