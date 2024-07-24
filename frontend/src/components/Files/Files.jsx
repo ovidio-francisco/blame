@@ -1,37 +1,176 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { getCurrentUserEmail } from '../../firebase/utils';
+import { zipFiles } from '../../utils/fileUtils';
 
 import Panel from '../Panel/Panel'
-import DirectoryUpload from '../DirectoryUpload/DirectoryUpload'
-import VerticalScrollable  from '../VerticalScrollable/VerticalScrollable';
+import ScrollableContainer  from '../ScrollableContainer/ScrollableContainer';
+import { StyledButton } from '../StyledComponents/StyledComponents';
 
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const FilesWrapper = styled.div`
 	min-width: 20%;
+	max-width: 20%;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 
+	input[type="file"] {
+		display: none;
+	}
+
+	form {
+		display: flex;
+		flex: 1;
+		overflow: hidden;
+		flex-direction: inherit;
+		align-items: inherit;
+	}
+
+	#toolButtons {
+		display: flex;
+		margin-bottom: 0.5rem;
+	}
+
+	#sectionControls {
+		width: 100%;
+		margin-bottom: 0.5rem;
+	}
+
+	#sectionInput {
+		max-width: 8em;
+		margin-left: 0.5em;
+	}
+
+    .btn-files {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+		margin: 0.1rem;
+        color: #6c757d;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+		font-size: 1.2rem;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .btn-files:hover {
+        background-color: #e2e6ea; /* Slightly darker gray on hover */
+    }
+
+	#filesLabel {
+		font-size: 1rem;
+		font-weight: bold;
+		margin-bottom: 0.1rem;
+	}
+
+	button[type="submit"] {
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0.5rem;
+	}
 `;
 
 const Files = () => {
+    const [status, setStatus] = useState('');
+    const [section, setSection] = useState('Turma A');
+    const [selectedFiles, setSelectedFiles] = useState([]);
+
+	const handleFileChange = (event) => {
+        const input = event.target;
+        const files = Array.from(input.files);
+        setSelectedFiles(prevFiles => [...prevFiles, ...files]);
+	};
+
+    const handleUpload = async (event) => {
+        event.preventDefault();
+
+        if (selectedFiles.length > 0) {
+            try {
+                const { blob, zipFileName } = await zipFiles(selectedFiles);
+                const formData = new FormData();
+                formData.append('file', blob, zipFileName);
+                formData.append('user', getCurrentUserEmail());
+                formData.append('section', section);
+
+                const response = await fetch('/files/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const text = await response.text();
+                // setStatus(text);
+            } catch (error) {
+                setStatus('Error uploading: ' + error);
+                console.error('Error:', error);
+            }
+        } else {
+            setStatus('No files or directories selected');
+        }
+    };
+
 	return (
 		<FilesWrapper>
 			<Panel flex="1">
+	
+            <form onSubmit={handleUpload}>
+
 				<header>
-					<DirectoryUpload />
+
+
+					<div id="toolButtons">
+
+						<div>
+							<div className="btn-files" onClick={() => document.getElementById('fileDirectoryInput').click()}>
+								<i className="fas fa-upload"></i>
+							</div>
+							<input 
+								type="file" 
+								id="fileDirectoryInput" 
+								name="fileDirectory" 
+								webkitdirectory="true" 
+								directory="true" 
+								multiple 
+								onChange={handleFileChange}
+							/>
+							<i className="fa-solid fa-file-arrow-up btn-files"></i>
+							<i className="fa-solid fa-eraser btn-files"></i>
+							<i className="fa-solid fa-xmark btn-files"></i>
+						</div>
+					</div>
+
+					<div id='sectionControls'>
+						<label htmlFor="sectionInput">Section</label>
+						<input 
+							type="text" 
+							id="sectionInput" 
+							value={section} 
+							onChange={e => setSection(e.target.value)} 
+						/>
+					</div>
+
 				</header>
-				<VerticalScrollable>
 
-					<ul>
-						{Array.from({ length: 60 }, (_, i) => (
-							<li> File_{i+1} </li>
-						))}
-					</ul>
+				<label id='filesLabel'>Files:</label>
+				<ScrollableContainer>
+					<div id='filesList'>
+						<ul>
+							{selectedFiles.map((file, index) => (
+								<li key={index}>{file.webkitRelativePath || file.name}</li>
+							))}
+						</ul>
+					</div>
+				</ScrollableContainer>
+					
+				<StyledButton type="submit">Upload</StyledButton>
 
-				</VerticalScrollable>
-				<footer>
-				</footer>
+            </form>
+            <p>{status}</p>
+
 			</Panel>
 		</FilesWrapper>
 	);

@@ -1,10 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { Link } from 'react-router-dom';
 
 import { auth } from '../../firebase/firebase';
 import { signOutUser } from '../../firebase/auth';
+
+import { StyledLink, StyledButton } from '../StyledComponents/StyledComponents';
+
 
 const AuthWrapper = styled.div`
 	display: flex;
@@ -15,31 +17,6 @@ const AuthWrapper = styled.div`
 
 `;
 
-const AuthLink = styled(Link)`
-	margin-left: 10px;
-	text-decoration: none;
-	color: #007BFF;
-
-	&:hover {
-		color: #0056b3;
-	}
-`;
-
-const AuthButton = styled.button`
-	margin-left: 10px;
-	margin-right: 6px;
-	padding: 8px 16px;
-	border: none;
-	background-color: #007BFF;
-	color: white;
-	cursor: pointer;
-	border-radius: 4px;
-
-	&:hover {
-		background-color: #0056b3;
-	}
-`;
-
 const Auth = () => {
     const [user] = useAuthState(auth);
 
@@ -48,13 +25,13 @@ const Auth = () => {
 			{user ? (
 				<>
 					<span>{user.displayName || user.email}</span>
-					<AuthLink to="/profile">Profile</AuthLink>
-					<AuthButton onClick={signOutUser}>Sign Out</AuthButton>
+					<StyledLink to="/profile">Profile</StyledLink>
+					<StyledButton onClick={signOutUser}>Sign Out</StyledButton>
 				</>
 			) : (
 				<>
-					<AuthLink to="/signin">Sign In</AuthLink>
-					<AuthLink to="/signup">Sign Up</AuthLink>
+					<StyledLink to="/signin">Sign In</StyledLink>
+					<StyledLink to="/signup">Sign Up</StyledLink>
 				</>
 			)}
 		</AuthWrapper>

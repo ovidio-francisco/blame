@@ -13,8 +13,6 @@ const PanelWrapper = styled.div`
 	border-radius: 5px; 
 	box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.1);
 
-
-
 	padding: 4px;
 	margin: 10px;
 `;
