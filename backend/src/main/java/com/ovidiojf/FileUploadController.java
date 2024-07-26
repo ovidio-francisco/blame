@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 @RestController
 @RequestMapping("/files")
@@ -27,19 +30,18 @@ public class FileUploadController {
             @RequestParam("section") String section) {
 
         try {
-            // Save the uploaded zip file temporarily
+            
             Path tempZipFile = Files.createTempFile("upload", ".zip");
             Files.write(tempZipFile, file.getBytes());
             
-            user = Utils.nomalizeFileName(user);
-            section = Utils.nomalizeFileName(section);
+            user = Utils.normalizeFileName(user);
+            section = Utils.normalizeFileName(section);
 
             File destDir = new File(uploadDir, user + File.separator + section + File.separator);
             if (!destDir.exists()) {
                 destDir.mkdirs();
             }
 
-            // Extract the zip file to the unique directory
             ZipUtils.unzip(tempZipFile.toFile(), destDir);
             Files.delete(tempZipFile);
 
@@ -50,5 +52,37 @@ public class FileUploadController {
                     .body("Failed to process uploaded directory.");
         }
     }
+
+	@GetMapping("/list") 
+	public ResponseEntity<List<String>> getFilesUploaded(
+			@RequestParam("user") String user,
+            @RequestParam("section") String section) {
+
+            user = Utils.normalizeFileName(user);
+            section = Utils.normalizeFileName(section);
+
+			try {
+
+				File directory = new File(uploadDir, user + File.separator + section + File.separator);
+				
+				if(!directory.exists() || !directory.isDirectory()) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+				}
+
+				int basePathLength = directory.getAbsolutePath().length();
+				List<String> list = new ArrayList<>();
+
+				Utils.listFiles(directory, list, basePathLength);
+
+				return ResponseEntity.ok(list);
+
+			}
+			catch(Exception e) {
+				logger.error("Failed to list files in the directory", e);
+
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+			}
+
+	}
 
 }
