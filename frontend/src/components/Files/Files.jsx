@@ -20,27 +20,40 @@ const FilesWrapper = styled.div`
 		display: none;
 	}
 
-	form {
+	form, #filesContainer {
 		display: flex;
 		flex: 1;
 		overflow: hidden;
 		flex-direction: inherit;
-		align-items: inherit;
 	}
 
 	#toolButtons {
 		display: flex;
+		justify-content: space-between;
 		margin-bottom: 0.5rem;
+	}
+
+	#leftButtons i {
+		margin-right: 0.2rem	
+	}
+
+	#rightButtons i {
+		margin-left: 0.2rem	
 	}
 
 	#sectionControls {
-		width: 100%;
+		display: flex;
+		align-items: center;
 		margin-bottom: 0.5rem;
 	}
 
+	#sectionControls label {
+		margin-right: 0.5em;
+	}
+
 	#sectionInput {
-		max-width: 8em;
-		margin-left: 0.5em;
+		padding: 0.2rem;
+		width: 100%;
 	}
 
     .btn-files {
@@ -50,16 +63,14 @@ const FilesWrapper = styled.div`
         justify-content: center;
         width: 2rem;
         height: 2rem;
-		margin: 0.1rem;
         color: #6c757d;
         border: 1px solid #ced4da;
         border-radius: 4px;
 		font-size: 1.2rem;
-        transition: background-color 0.3s, color 0.3s;
     }
 
     .btn-files:hover {
-        background-color: #e2e6ea; /* Slightly darker gray on hover */
+        background-color: #e2e6ea;
     }
 
 	#filesLabel {
@@ -69,11 +80,26 @@ const FilesWrapper = styled.div`
 	}
 
 	button[type="submit"] {
-    margin-left: 0px;
-    margin-right: 0px;
-    margin-top: 0.5rem;
+		margin-left: 0px;
+		margin-right: 0px;
+		margin-top: 0.5rem;
+		font-weight: bold;
 	}
+
+	#statusParagraph {
+		color: red;
+	}
+						
+	#filesContainer ul li {
+		list-style:none;
+	}
+
+	#filesContainer ul {
+		padding-left: 1rem;
+	}
+
 `;
+
 
 const Files = () => {
     const [status, setStatus] = useState('');
@@ -103,7 +129,7 @@ const Files = () => {
                 });
 
                 const text = await response.text();
-                // setStatus(text);
+				setStatus(text);
             } catch (error) {
                 setStatus('Error uploading: ' + error);
                 console.error('Error:', error);
@@ -119,57 +145,53 @@ const Files = () => {
 	
             <form onSubmit={handleUpload}>
 
-				<header>
-
-
-					<div id="toolButtons">
-
-						<div>
-							<div className="btn-files" onClick={() => document.getElementById('fileDirectoryInput').click()}>
-								<i className="fas fa-upload"></i>
-							</div>
-							<input 
-								type="file" 
-								id="fileDirectoryInput" 
-								name="fileDirectory" 
-								webkitdirectory="true" 
-								directory="true" 
-								multiple 
-								onChange={handleFileChange}
-							/>
-							<i className="fa-solid fa-file-arrow-up btn-files"></i>
-							<i className="fa-solid fa-eraser btn-files"></i>
-							<i className="fa-solid fa-xmark btn-files"></i>
-						</div>
-					</div>
-
-					<div id='sectionControls'>
-						<label htmlFor="sectionInput">Section</label>
+				<div id="toolButtons">
+					<div id='leftButtons'>
+							<i className="fas fa-upload btn-files" onClick={() => document.getElementById('fileDirectoryInput').click()}></i>
 						<input 
-							type="text" 
-							id="sectionInput" 
-							value={section} 
-							onChange={e => setSection(e.target.value)} 
+							type="file" 
+							id="fileDirectoryInput" 
+							name="fileDirectory" 
+							webkitdirectory="true" 
+							directory="true" 
+							multiple 
+							onChange={handleFileChange}
 						/>
+						<i className="fa-solid fa-file-arrow-up btn-files"></i>
 					</div>
 
-				</header>
+					<div id='rightButtons'>
+						<i className="fa-solid fa-eraser btn-files"></i>
+						<i className="fa-solid fa-xmark btn-files"></i>
+					</div>
+				</div>
 
-				<label id='filesLabel'>Files:</label>
-				<ScrollableContainer>
-					<div id='filesList'>
+				<div id='sectionControls'>
+					<label htmlFor="sectionInput">Section</label>
+					<input 
+						type="text" 
+						id="sectionInput" 
+						value={section} 
+						onChange={e => setSection(e.target.value)} 
+					/>
+				</div>
+
+				<div id='filesContainer'>
+					<label id='filesLabel'>Files:</label>
+					<ScrollableContainer>
 						<ul>
 							{selectedFiles.map((file, index) => (
 								<li key={index}>{file.webkitRelativePath || file.name}</li>
 							))}
 						</ul>
-					</div>
-				</ScrollableContainer>
+					</ScrollableContainer>
+				</div>
 					
 				<StyledButton type="submit">Upload</StyledButton>
 
             </form>
-            <p>{status}</p>
+		
+			{ status && <p id='statusParagraph'>{status}</p> }
 
 			</Panel>
 		</FilesWrapper>
@@ -177,4 +199,3 @@ const Files = () => {
 };
 
 export default Files;
-
