@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const PanelWrapper = styled.div`
 	display: flex;
-	flex: ${({flex}) => flex || 'initial'};
+	flex: ${({ $flex }) => $flex || 'initial'};
 	overflow: inherit;
 	flex-direction: inherit;
 	align-items: inherit;
@@ -20,7 +20,7 @@ const PanelWrapper = styled.div`
 
 const Panel = ({ children, flex }) => {
 	return (
-		<PanelWrapper flex={flex}>
+		<PanelWrapper $flex={flex}>
 			{children}
 		</PanelWrapper>
 	);

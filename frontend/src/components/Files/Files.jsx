@@ -139,6 +139,37 @@ const Files = () => {
         }
     };
 
+	const handleClearFiles = () => {
+		setSelectedFiles([]);
+	}
+
+	const fetchFilesList = async () => {
+		try {
+			const user = getCurrentUserEmail();
+			const response = await fetch(`/files/list?user=${user}&section=${section}`);
+
+			if (!response.ok) {
+				throw new Error('Failed to fetch files list');
+			}
+
+			const contentType = response.headers.get('content-type');
+			if(contentType && contentType.indexOf('application/json') !== -1) {
+				const filesList = await response.json();
+				setSelectedFiles(filesList.map(file=>({name: file})));
+				// console.log('Files list: ', filesList);
+			}
+			else {
+				const text = await response.text();
+				// console.error('Unexpected response', text);
+				throw new Error('Unexpected response content type');
+			}
+		}
+		catch (error) {
+			console.error("Error fetching files", error);
+		}
+	};
+
+
 	return (
 		<FilesWrapper>
 			<Panel flex="1">
@@ -161,7 +192,7 @@ const Files = () => {
 					</div>
 
 					<div id='rightButtons'>
-						<i className="fa-solid fa-eraser btn-files"></i>
+						<i className="fa-solid fa-eraser btn-files" onClick={handleClearFiles}></i>
 						<i className="fa-solid fa-xmark btn-files"></i>
 					</div>
 				</div>
@@ -188,6 +219,7 @@ const Files = () => {
 				</div>
 					
 				<StyledButton type="submit">Upload</StyledButton>
+				<StyledButton type="button" onClick={fetchFilesList} >Fetch</StyledButton>
 
             </form>
 		
