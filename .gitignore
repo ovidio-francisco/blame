@@ -3,13 +3,20 @@
 # Ignore node_modules in frontend
 /frontend/node_modules
 
-# Ignore node_modules in backend (if applicable)
-/backend/node_modules
-
 # dependencies
 /node_modules
 /.pnp
 .pnp.js
+frontend/build/
+backend/target/
+backend/src/main/resources/static/static/js/*.js
+backend/src/main/resources/static/static/js/*.js.LICENSE.txt
+backend/src/main/resources/static/static/js/*.js.map
+backend/target/classes/static/static/js/*.js
+backend/target/classes/static/static/js/*.js.LICENSE.txt
+backend/target/classes/static/static/js/*.js.map
+
+
 
 # testing
 /coverage

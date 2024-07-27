@@ -1,104 +1,13 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { getCurrentUserEmail } from '../../firebase/utils';
-import { zipFiles } from '../../utils/fileUtils';
+import { fetchFilesList, uploadFiles } from '../../utils/apiUtils';
 
 import Panel from '../Panel/Panel'
 import ScrollableContainer  from '../ScrollableContainer/ScrollableContainer';
+import { FilesWrapper } from './FilesStyles';
 import { StyledButton } from '../StyledComponents/StyledComponents';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
-
-const FilesWrapper = styled.div`
-	min-width: 20%;
-	max-width: 20%;
-	overflow: hidden;
-	display: flex;
-	flex-direction: column;
-
-	input[type="file"] {
-		display: none;
-	}
-
-	form, #filesContainer {
-		display: flex;
-		flex: 1;
-		overflow: hidden;
-		flex-direction: inherit;
-	}
-
-	#toolButtons {
-		display: flex;
-		justify-content: space-between;
-		margin-bottom: 0.5rem;
-	}
-
-	#leftButtons i {
-		margin-right: 0.2rem	
-	}
-
-	#rightButtons i {
-		margin-left: 0.2rem	
-	}
-
-	#sectionControls {
-		display: flex;
-		align-items: center;
-		margin-bottom: 0.5rem;
-	}
-
-	#sectionControls label {
-		margin-right: 0.5em;
-	}
-
-	#sectionInput {
-		padding: 0.2rem;
-		width: 100%;
-	}
-
-    .btn-files {
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 2rem;
-        height: 2rem;
-        color: #6c757d;
-        border: 1px solid #ced4da;
-        border-radius: 4px;
-		font-size: 1.2rem;
-    }
-
-    .btn-files:hover {
-        background-color: #e2e6ea;
-    }
-
-	#filesLabel {
-		font-size: 1rem;
-		font-weight: bold;
-		margin-bottom: 0.1rem;
-	}
-
-	button[type="submit"] {
-		margin-left: 0px;
-		margin-right: 0px;
-		margin-top: 0.5rem;
-		font-weight: bold;
-	}
-
-	#statusParagraph {
-		color: red;
-	}
-						
-	#filesContainer ul li {
-		list-style:none;
-	}
-
-	#filesContainer ul {
-		padding-left: 1rem;
-	}
-
-`;
 
 
 const Files = () => {
@@ -112,63 +21,39 @@ const Files = () => {
         setSelectedFiles(prevFiles => [...prevFiles, ...files]);
 	};
 
-    const handleUpload = async (event) => {
-        event.preventDefault();
-
-        if (selectedFiles.length > 0) {
-            try {
-                const { blob, zipFileName } = await zipFiles(selectedFiles);
-                const formData = new FormData();
-                formData.append('file', blob, zipFileName);
-                formData.append('user', getCurrentUserEmail());
-                formData.append('section', section);
-
-                const response = await fetch('/files/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const text = await response.text();
-				setStatus(text);
-            } catch (error) {
-                setStatus('Error uploading: ' + error);
-                console.error('Error:', error);
-            }
-        } else {
-            setStatus('No files or directories selected');
-        }
-    };
-
 	const handleClearFiles = () => {
 		setSelectedFiles([]);
 	}
 
-	const fetchFilesList = async () => {
+	const handleUpload = async (event) => {
+		event.preventDefault();
+
+		if (selectedFiles.length > 0) {
+			try {
+				const user = getCurrentUserEmail();
+				const result = await uploadFiles(section, user, selectedFiles);
+				setStatus(result);
+			}
+			catch (error) {
+				setStatus(error.message);	
+				console.error('Error', error);
+			}
+		} else {
+			setStatus('No files or directories selected');
+		}
+	}
+
+	const handleFetchFileList = async ()  => {
 		try {
 			const user = getCurrentUserEmail();
-			const response = await fetch(`/files/list?user=${user}&section=${section}`);
-
-			if (!response.ok) {
-				throw new Error('Failed to fetch files list');
-			}
-
-			const contentType = response.headers.get('content-type');
-			if(contentType && contentType.indexOf('application/json') !== -1) {
-				const filesList = await response.json();
-				setSelectedFiles(filesList.map(file=>({name: file})));
-				// console.log('Files list: ', filesList);
-			}
-			else {
-				const text = await response.text();
-				// console.error('Unexpected response', text);
-				throw new Error('Unexpected response content type');
-			}
+			const filesList = await fetchFilesList(section, user);
+			setSelectedFiles(filesList.map(file=>({name: file})));
 		}
 		catch (error) {
+			setStatus(error.message);
 			console.error("Error fetching files", error);
 		}
-	};
-
+	}
 
 	return (
 		<FilesWrapper>
@@ -219,7 +104,7 @@ const Files = () => {
 				</div>
 					
 				<StyledButton type="submit">Upload</StyledButton>
-				<StyledButton type="button" onClick={fetchFilesList} >Fetch</StyledButton>
+				<StyledButton type="button" onClick={handleFetchFileList} >Fetch</StyledButton>
 
             </form>
 		
