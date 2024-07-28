@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/files")
+// public class StorageController {
 public class FileUploadController {
 
 	private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
@@ -81,7 +82,8 @@ public class FileUploadController {
 
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 			}
-
 	}
+
+	// http://localhost:8080/files/list?user=ovidiojf@gmail.com&section=Turma_BBB
 
 }

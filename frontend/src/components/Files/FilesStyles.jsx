@@ -11,7 +11,7 @@ export const FilesWrapper = styled.div`
 		display: none;
 	}
 
-	form, #filesContainer {
+	#filesControls, #filesListContainer {
 		display: flex;
 		flex: 1;
 		overflow: hidden;
@@ -70,7 +70,7 @@ export const FilesWrapper = styled.div`
 		margin-bottom: 0.1rem;
 	}
 
-	button[type="submit"] {
+	#btnUpload {
 		margin-left: 0px;
 		margin-right: 0px;
 		margin-top: 0.5rem;
@@ -81,11 +81,11 @@ export const FilesWrapper = styled.div`
 		color: red;
 	}
 						
-	#filesContainer ul li {
+	#filesListContainer ul li {
 		list-style:none;
 	}
 
-	#filesContainer ul {
+	#filesListContainer ul {
 		padding-left: 1rem;
 	}
 

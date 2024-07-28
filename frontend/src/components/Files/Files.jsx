@@ -25,9 +25,7 @@ const Files = () => {
 		setSelectedFiles([]);
 	}
 
-	const handleUpload = async (event) => {
-		event.preventDefault();
-
+	const handleUpload = async () => {
 		if (selectedFiles.length > 0) {
 			try {
 				const user = getCurrentUserEmail();
@@ -55,11 +53,13 @@ const Files = () => {
 		}
 	}
 
+
+
 	return (
 		<FilesWrapper>
 			<Panel flex="1">
 	
-            <form onSubmit={handleUpload}>
+            <div id='filesControls'>
 
 				<div id="toolButtons">
 					<div id='leftButtons'>
@@ -84,15 +84,19 @@ const Files = () => {
 
 				<div id='sectionControls'>
 					<label htmlFor="sectionInput">Section</label>
-					<input 
-						type="text" 
+					<select 
 						id="sectionInput" 
 						value={section} 
-						onChange={e => setSection(e.target.value)} 
-					/>
+						onChange={e => setSection(e.target.value)}
+					>
+						<option value="Turma A">Turma A</option>
+						<option value="Turma XXX">Turma XXX</option>
+						<option value="Turma URL">Turma URL</option>
+						<option value="Turma YYY">Turma YYY</option>
+					</select>
 				</div>
 
-				<div id='filesContainer'>
+				<div id='filesListContainer'>
 					<label id='filesLabel'>Files:</label>
 					<ScrollableContainer>
 						<ul>
@@ -103,10 +107,10 @@ const Files = () => {
 					</ScrollableContainer>
 				</div>
 					
-				<StyledButton type="submit">Upload</StyledButton>
-				<StyledButton type="button" onClick={handleFetchFileList} >Fetch</StyledButton>
+				<StyledButton id='btnUpload' onClick={handleUpload}>Upload</StyledButton>
+				<StyledButton onClick={handleFetchFileList} >Fetch</StyledButton>
 
-            </form>
+            </div>
 		
 			{ status && <p id='statusParagraph'>{status}</p> }
 
