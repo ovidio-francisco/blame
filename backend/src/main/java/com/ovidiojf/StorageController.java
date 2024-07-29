@@ -14,16 +14,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/files")
-// public class StorageController {
-public class FileUploadController {
+@RequestMapping("/storage")
+public class StorageController {
 
-	private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
+	private static final Logger logger = LoggerFactory.getLogger(StorageController.class);
 
 	@Value("${file.upload-dir}")
 	private String uploadDir;
 
-    @PostMapping("/upload")
+    @PostMapping("/files/upload")
     public ResponseEntity<String> handleFileUpload(
             @RequestParam("file") MultipartFile file,
             @RequestParam("user") String user,
@@ -53,7 +52,7 @@ public class FileUploadController {
         }
     }
 
-	@GetMapping("/list") 
+	@GetMapping("/files/list") 
 	public ResponseEntity<List<String>> getFilesUploaded(
 			@RequestParam("user") String user,
             @RequestParam("section") String section) {
@@ -84,6 +83,39 @@ public class FileUploadController {
 			}
 	}
 
-	// http://localhost:8080/files/list?user=ovidiojf@gmail.com&section=Turma_BBB
+	@GetMapping("/sections/list") 
+	public ResponseEntity<List<String>> getSectionList(
+			@RequestParam("user") String user) {
 
+            user = Utils.normalizeFileName(user);
+
+			try {
+
+				File directory = new File(uploadDir, user + File.separator + File.separator);
+				
+				if(!directory.exists() || !directory.isDirectory()) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+				}
+
+				List<String> list = new ArrayList<>();
+
+
+				File[] subdirectories = directory.listFiles(File::isDirectory);
+
+				if (subdirectories != null) {
+					for(File d : subdirectories) {
+						list.add(d.getName());
+					}
+				}
+
+
+				return ResponseEntity.ok(list);
+			}
+			catch(Exception e) {
+				logger.error("Failed to list files in the directory", e);
+
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+			}
+
+	}
 }

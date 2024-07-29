@@ -1,7 +1,7 @@
 import { zipFiles } from './fileUtils';
 
-const FILE_UPLOAD_URL = '/files/upload';
-const FILE_LIST_URL   = '/files/list';
+const FILE_UPLOAD_URL = '/storage/files/upload';
+const FILE_LIST_URL   = '/storage/files/list';
 
 export const uploadFiles = async (section, user, selectedFiles) => {
 
@@ -49,3 +49,9 @@ export const fetchFilesList = async (section, user) => {
 		console.error("Error fetching files", error);
 	}
 };
+
+
+
+
+
+
