@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Auth from '../Auth/Auth';
+// import Auth from '../Auth/Auth';
+import AuthComponent from '../Auth/AuthComponent';
 import Panel from '../Panel/Panel';
 
 
@@ -28,7 +29,8 @@ const Header = () => {
 
 			<h1>Blame</h1>
 			<nav>
-				<Auth />
+				<AuthComponent />
+				
 			</nav>
 		</Panel>
 	</HeaderWrapper>
@@ -37,3 +39,4 @@ const Header = () => {
 
 export default Header;
 
+				// <Auth />

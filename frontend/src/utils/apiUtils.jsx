@@ -51,7 +51,9 @@ export const fetchFilesList = async (section, user) => {
 };
 
 
-
+export const fetchSections = async (user) => {
+	return ['Turma RRR', 'Turma LLL', 'Turma OOO'];
+}
 
 
 

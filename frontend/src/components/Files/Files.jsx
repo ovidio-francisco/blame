@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { getCurrentUserEmail } from '../../firebase/utils';
-import { fetchFilesList, uploadFiles } from '../../utils/apiUtils';
+import React, { useState, useEffect } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../../firebase/firebase';
+import { fetchFilesList, uploadFiles, fetchSections } from '../../utils/apiUtils';
 
 import Panel from '../Panel/Panel'
 import ScrollableContainer  from '../ScrollableContainer/ScrollableContainer';
@@ -11,9 +12,11 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 
 const Files = () => {
+	const [user] = useAuthState(auth);
     const [status, setStatus] = useState('');
-    const [section, setSection] = useState('Turma A');
-    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [section, setSection] = useState('');
+    const [sections, setSections] = useState([]);
+    const [selectedFiles, setSelectedFiles] = useState([]); // TODO renomear para FilesSections
 
 	const handleFileChange = (event) => {
         const input = event.target;
@@ -26,10 +29,15 @@ const Files = () => {
 	}
 
 	const handleUpload = async () => {
+		
+		if(!user) {
+			setStatus('User not logged in');
+			return;
+		}
+
 		if (selectedFiles.length > 0) {
 			try {
-				const user = getCurrentUserEmail();
-				const result = await uploadFiles(section, user, selectedFiles);
+				const result = await uploadFiles(section, user.email, selectedFiles);
 				setStatus(result);
 			}
 			catch (error) {
@@ -41,10 +49,14 @@ const Files = () => {
 		}
 	}
 
-	const handleFetchFileList = async ()  => {
+	const handleFetchFileList = async () => {
+		if(!user) {
+			setStatus('User not logged in');
+			return;
+		}
+
 		try {
-			const user = getCurrentUserEmail();
-			const filesList = await fetchFilesList(section, user);
+			const filesList = await fetchFilesList(section, user.email);
 			setSelectedFiles(filesList.map(file=>({name: file})));
 		}
 		catch (error) {
@@ -52,6 +64,30 @@ const Files = () => {
 			console.error("Error fetching files", error);
 		}
 	}
+
+	const loadSections = async () => {
+		try {
+			const sections = await fetchSections();
+			setSections(sections);
+			if(sections.length > 0) {
+				setSection(sections[0]);
+			}
+		}
+		catch (error) {
+			console.error('Error fetching sections: ', error);
+		}
+	}
+
+	useEffect(() => {
+		if(user) {
+			loadSections();
+		}
+		else {
+			setSections([]);
+			setSelectedFiles([]);
+			setSection('');
+		}
+	}, [user]);
 
 
 
@@ -84,15 +120,12 @@ const Files = () => {
 
 				<div id='sectionControls'>
 					<label htmlFor="sectionInput">Section</label>
-					<select 
-						id="sectionInput" 
-						value={section} 
-						onChange={e => setSection(e.target.value)}
-					>
-						<option value="Turma A">Turma A</option>
-						<option value="Turma XXX">Turma XXX</option>
-						<option value="Turma URL">Turma URL</option>
-						<option value="Turma YYY">Turma YYY</option>
+					<select id="sectionInput" value={section} onChange={e => setSection(e.target.value)} >
+						{ sections.map((sec, index) => (
+							<option key={index} value={sec}>
+								{sec}
+							</option>
+						))}
 					</select>
 				</div>
 
