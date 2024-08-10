@@ -1,9 +1,7 @@
 
 // TODO: Entender tudo isso!
-	
 
 import React, { useEffect, useState } from 'react';
-import { auth, googleProvider } from '../../firebase/firebase';
 import { signInWithGoogle, signOutUser, onAuthStateChangedListener } from '../../firebase/auth';
 
 const AuthComponent = () => {
@@ -27,19 +25,14 @@ const AuthComponent = () => {
         };
     }, []);
 
+
     const handleGoogleSignIn = async () => {
 		setLoading(true);
 		setError('');
 
         try {
-            const result = await signInWithGoogle(auth, googleProvider);
-            console.log('User signed in with Google:', result.user.email);
-			
-            // Optionally close the pop-up window if opened in such context
-			if (window.opener) {
-				window.close();
-			}
 
+			await signInWithGoogle();
 
         } catch (error) {
             console.error('Error signing in with Google:', error);
@@ -49,6 +42,7 @@ const AuthComponent = () => {
 			setLoading(false);
 		}
     };
+
 
     const handleSignOut = async () => {
 		setLoading(true);
