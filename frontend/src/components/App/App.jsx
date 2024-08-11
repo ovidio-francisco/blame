@@ -4,8 +4,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from '../Header/Header';
 import Home from '../Home/Home';
 
-import SignIn from '../SignIn/SignIn';
-import SignUp from '../SignUp/SignUp';
+import SignIn from '../Auth/SignIn';
+import SignUp from '../Auth/SignUp';
 import Profile from '../Profile/Profile';
 
 const App = () => {
