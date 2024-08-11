@@ -2,7 +2,18 @@
 // TODO: Entender tudo isso!
 
 import React, { useEffect, useState } from 'react';
-import { signInWithGoogle, signOutUser, onAuthStateChangedListener } from '../../firebase/auth';
+import styled from 'styled-components';
+import { signOutUser, onAuthStateChangedListener } from '../../firebase/auth';
+import { StyledLink, StyledButton } from '../StyledComponents/StyledComponents';
+
+const AuthWrapper = styled.div`
+	display: flex;
+	margin: 4px;
+	width: 100%;
+	justify-content: flex-end;
+	align-items: center;
+`;
+
 
 const AuthComponent = () => {
     const [user, setUser] = useState(null);
@@ -26,23 +37,6 @@ const AuthComponent = () => {
     }, []);
 
 
-    const handleGoogleSignIn = async () => {
-		setLoading(true);
-		setError('');
-
-        try {
-
-			await signInWithGoogle();
-
-        } catch (error) {
-            console.error('Error signing in with Google:', error);
-			setError('Failed to sign in with Google');
-        }
-		finally {
-			setLoading(false);
-		}
-    };
-
 
     const handleSignOut = async () => {
 		setLoading(true);
@@ -62,26 +56,28 @@ const AuthComponent = () => {
     };
 
     return (
-        <div>
-		<h2>Authentication</h2>
-
+		<AuthWrapper>
 			{loading ? (
 				<p>Loading ...</p> 
 			) : (
 				<>
 					{user ? (
 						<div>
-							<p>Welcome {user.email}</p>
-							<button onClick={handleSignOut}>Sign Out</button>
+							<span>{user.displayName || user.email}</span>
+							<StyledLink to="/profile">Profile</StyledLink>
+							<StyledButton onClick={handleSignOut}>Sign Out</StyledButton>
 						</div>
 					) : (
-						<button onClick={handleGoogleSignIn}>Sign In with Google</button>
+						<>
+							<StyledLink to="/signin">Sign In</StyledLink>
+							<StyledLink to="/signup">Sign Up</StyledLink>
+						</>
 					)}
 				</>
 			)}
 			
 			{error && <p>{error}</p>}
-        </div>
+		</AuthWrapper>
     );
 };
 
@@ -92,7 +88,25 @@ export default AuthComponent;
 
 
 
+							// <button onClick={handleGoogleSignIn}>Sign In with Google</button>
 
+
+    // const handleGoogleSignIn = async () => {
+		// setLoading(true);
+		// setError('');
+
+        // try {
+
+			// await signInWithGoogle();
+
+        // } catch (error) {
+            // console.error('Error signing in with Google:', error);
+			// setError('Failed to sign in with Google');
+        // }
+		// finally {
+			// setLoading(false);
+		// }
+    // };
 
 
 
