@@ -30,8 +30,8 @@ const Header = () => {
 			<h1>Blame</h1>
 			<nav>
 				<AuthComponent />
-				
 			</nav>
+
 		</Panel>
 	</HeaderWrapper>
 	);
