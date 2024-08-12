@@ -1,7 +1,8 @@
 import { zipFiles } from './fileUtils';
 
-const FILE_UPLOAD_URL = '/storage/files/upload';
-const FILE_LIST_URL   = '/storage/files/list';
+const FILES_UPLOAD_URL  = '/storage/files/upload';
+const FILES_LIST_URL    = '/storage/files/list';
+const SECTIONS_LIST_URL = '/storage/sections/list';
 
 export const uploadFiles = async (section, user, selectedFiles) => {
 
@@ -12,7 +13,7 @@ export const uploadFiles = async (section, user, selectedFiles) => {
 		formData.append('user', user);
 		formData.append('section', section);
 
-		const response = await fetch(FILE_UPLOAD_URL, {
+		const response = await fetch(FILES_UPLOAD_URL, {
 			method: 'POST',
 			body: formData
 		});
@@ -27,11 +28,9 @@ export const uploadFiles = async (section, user, selectedFiles) => {
 	}
 };
 
-
-
 export const fetchFilesList = async (section, user) => {
 	try {
-		const response = await fetch(`${FILE_LIST_URL}?user=${user}&section=${section}`);
+		const response = await fetch(`${FILES_LIST_URL}?user=${user}&section=${section}`);
 
 		if (!response.ok) {
 			throw new Error('Failed to fetch files list');
@@ -52,7 +51,26 @@ export const fetchFilesList = async (section, user) => {
 
 
 export const fetchSections = async (user) => {
-	return ['Turma RRR', 'Turma LLL', 'Turma OOO'];
+	try {
+		const response = await fetch(`${SECTIONS_LIST_URL}?user=${user}`);
+
+		if (!response.ok) {
+			throw new Error('Failed to fetch sections list');
+		}
+
+		const contentType = response.headers.get('content-type');
+		if (contentType && contentType.indexOf('application/json') !== -1) {
+			return await response.json();
+		}
+		else {
+			throw new Error("Unexpected resonse content type");
+		}
+	}
+	catch (error) {
+		console.error("Error fetching sections", error);
+	}
+
+	// return ['Turma RRR', 'Turma AAA', 'Turma LLL', 'Turma OOO'];
 }
 
 

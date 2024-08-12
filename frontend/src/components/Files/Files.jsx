@@ -16,16 +16,16 @@ const Files = () => {
     const [status, setStatus] = useState('');
     const [section, setSection] = useState('');
     const [sections, setSections] = useState([]);
-    const [selectedFiles, setSelectedFiles] = useState([]); // TODO renomear para FilesSections
+    const [filesSections, setFilesSections] = useState([]); 
 
 	const handleFileChange = (event) => {
         const input = event.target;
         const files = Array.from(input.files);
-        setSelectedFiles(prevFiles => [...prevFiles, ...files]);
+        setFilesSections(prevFiles => [...prevFiles, ...files]);
 	};
 
 	const handleClearFiles = () => {
-		setSelectedFiles([]);
+		setFilesSections([]);
 	}
 
 	const handleUpload = async () => {
@@ -35,9 +35,9 @@ const Files = () => {
 			return;
 		}
 
-		if (selectedFiles.length > 0) {
+		if (filesSections.length > 0) {
 			try {
-				const result = await uploadFiles(section, user.email, selectedFiles);
+				const result = await uploadFiles(section, user.email, filesSections);
 				setStatus(result);
 			}
 			catch (error) {
@@ -49,47 +49,54 @@ const Files = () => {
 		}
 	}
 
-	const handleFetchFileList = async () => {
-		if(!user) {
-			setStatus('User not logged in');
-			return;
-		}
 
-		try {
-			const filesList = await fetchFilesList(section, user.email);
-			setSelectedFiles(filesList.map(file=>({name: file})));
-		}
-		catch (error) {
-			setStatus(error.message);
-			console.error("Error fetching files", error);
-		}
-	}
-
-	const loadSections = async () => {
-		try {
-			const sections = await fetchSections();
-			setSections(sections);
-			if(sections.length > 0) {
-				setSection(sections[0]);
-			}
-		}
-		catch (error) {
-			console.error('Error fetching sections: ', error);
-		}
-	}
 
 	useEffect(() => {
+
+		const loadSections = async () => {
+			try {
+				const sections = await fetchSections(user.email);
+				setSections(sections);
+				if(sections.length > 0) {
+					setSection(sections[0]);
+				}
+			}
+			catch (error) {
+				console.error('Error fetching sections: ', error);
+			}
+		}
+
 		if(user) {
 			loadSections();
 		}
 		else {
 			setSections([]);
-			setSelectedFiles([]);
+			setFilesSections([]);
 			setSection('');
 		}
 	}, [user]);
 
 
+	useEffect(() => {
+		const handleFetchFileList = async () => {
+			if(!user) {
+				setStatus('User not logged in');
+				return;
+			}
+			try {
+				const filesList = await fetchFilesList(section, user.email);
+				setFilesSections(filesList.map(file=>({name: file, stored: 'remote'})));
+			}
+			catch (error) {
+				setStatus(error.message);
+				console.error("Error fetching files", error);
+			}
+		}
+
+		if (section && user) {
+			handleFetchFileList();
+		}
+	}, [user, section]);
 
 	return (
 		<FilesWrapper>
@@ -99,7 +106,7 @@ const Files = () => {
 
 				<div id="toolButtons">
 					<div id='leftButtons'>
-							<i className="fas fa-upload btn-files" onClick={() => document.getElementById('fileDirectoryInput').click()}></i>
+						<i className="fas fa-upload btn-files" aria-label="Select files to upload" onClick={() => document.getElementById('fileDirectoryInput').click()}></i>
 						<input 
 							type="file" 
 							id="fileDirectoryInput" 
@@ -133,7 +140,7 @@ const Files = () => {
 					<label id='filesLabel'>Files:</label>
 					<ScrollableContainer>
 						<ul>
-							{selectedFiles.map((file, index) => (
+							{filesSections.map((file, index) => (
 								<li key={index}>{file.webkitRelativePath || file.name}</li>
 							))}
 						</ul>
@@ -141,7 +148,6 @@ const Files = () => {
 				</div>
 					
 				<StyledButton id='btnUpload' onClick={handleUpload}>Upload</StyledButton>
-				<StyledButton onClick={handleFetchFileList} >Fetch</StyledButton>
 
             </div>
 		
@@ -153,3 +159,5 @@ const Files = () => {
 };
 
 export default Files;
+
+
