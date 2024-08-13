@@ -91,20 +91,17 @@ public class StorageController {
 
 			try {
 
-				File directory = new File(uploadDir, user + File.separator + File.separator);
-				
-				if(!directory.exists() || !directory.isDirectory()) {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-				}
-
+				File directory = new File(uploadDir, user  + File.separator);
 				List<String> list = new ArrayList<>();
+			
 
+				if(directory.exists() && directory.isDirectory()) {
+					File[] subdirectories = directory.listFiles(File::isDirectory);
 
-				File[] subdirectories = directory.listFiles(File::isDirectory);
-
-				if (subdirectories != null) {
-					for(File d : subdirectories) {
-						list.add(d.getName());
+					if (subdirectories != null) {
+						for(File d : subdirectories) {
+							list.add(d.getName());
+						}
 					}
 				}
 

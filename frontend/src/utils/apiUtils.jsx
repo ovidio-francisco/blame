@@ -55,7 +55,8 @@ export const fetchSections = async (user) => {
 		const response = await fetch(`${SECTIONS_LIST_URL}?user=${user}`);
 
 		if (!response.ok) {
-			throw new Error('Failed to fetch sections list');
+			const errorText = await response.text();
+			throw new Error(`Failed to fetch sections list: ${errorText}`);
 		}
 
 		const contentType = response.headers.get('content-type');
