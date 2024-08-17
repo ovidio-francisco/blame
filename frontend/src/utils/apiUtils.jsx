@@ -4,10 +4,10 @@ const FILES_UPLOAD_URL  = '/storage/files/upload';
 const FILES_LIST_URL    = '/storage/files/list';
 const SECTIONS_LIST_URL = '/storage/sections/list';
 
-export const uploadFiles = async (section, user, selectedFiles) => {
+export const uploadFiles = async (section, user, files) => {
 
 	try {
-		const { blob, zipFileName } = await zipFiles(selectedFiles);
+		const { blob, zipFileName } = await zipFiles(files);
 		const formData = new FormData();
 		formData.append('file', blob, zipFileName);
 		formData.append('user', user);

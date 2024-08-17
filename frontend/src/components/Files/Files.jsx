@@ -9,6 +9,7 @@ import { FilesWrapper } from './FilesStyles';
 import { StyledButton } from '../StyledComponents/StyledComponents';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import './styles.css';
 
 
 const Files = () => {
@@ -17,10 +18,14 @@ const Files = () => {
     const [section, setSection] = useState('');
     const [sections, setSections] = useState([]);
     const [filesSections, setFilesSections] = useState([]); 
+	const [loading, setLoading] = useState(false);
 
 	const handleFileChange = (event) => {
         const input = event.target;
-        const files = Array.from(input.files);
+        const selectedFiles = Array.from(input.files);
+
+		const files = selectedFiles.map(f => ({file: f, stored:'local'}));
+
         setFilesSections(prevFiles => [...prevFiles, ...files]);
 	};
 
@@ -35,20 +40,32 @@ const Files = () => {
 			return;
 		}
 
-		if (filesSections.length > 0) {
+		const localFiles = filesSections.filter(f => f.stored === 'local');
+		const files = localFiles.map(f => (f.file));
+
+		if (files.length > 0) {
+			setLoading(true);
 			try {
-				const result = await uploadFiles(section, user.email, filesSections);
+				const result = await uploadFiles(section, user.email, files); 
 				setStatus(result);
+
+
+				const updatedFileList = await fetchFilesList(section, user.email);
+				// setFilesSections(updatedFileList.map(fileName => ({file: fileName, stored: 'remote'})))
+				updateFilesSection(updatedFileList, 'remote');
+
 			}
 			catch (error) {
 				setStatus(error.message);	
 				console.error('Error', error);
 			}
+			finally {
+				setLoading(false);
+			}
 		} else {
 			setStatus('No files or directories selected');
 		}
 	}
-
 
 
 	useEffect(() => {
@@ -83,13 +100,18 @@ const Files = () => {
 				setStatus('User not logged in');
 				return;
 			}
+			setLoading(true);
 			try {
 				const filesList = await fetchFilesList(section, user.email);
-				setFilesSections(filesList.map(file=>({name: file, stored: 'remote'})));
+				// setFilesSections(filesList.map(fileName=>({file: fileName, stored: 'remote'})));
+				updateFilesSection(filesList, 'remote');
 			}
 			catch (error) {
 				setStatus(error.message);
 				console.error("Error fetching files", error);
+			}
+			finally {
+				setLoading(false);
 			}
 		}
 
@@ -97,6 +119,10 @@ const Files = () => {
 			handleFetchFileList();
 		}
 	}, [user, section]);
+
+	const updateFilesSection = (files, whereis) => {
+		setFilesSections(files.map(fileName=>({file: fileName, stored: whereis})));
+	}
 
 	return (
 		<FilesWrapper>
@@ -140,8 +166,13 @@ const Files = () => {
 					<label id='filesLabel'>Files:</label>
 					<ScrollableContainer>
 						<ul>
-							{filesSections.map((file, index) => (
-								<li key={index}>{file.webkitRelativePath || file.name}</li>
+							{filesSections.map((f, index) => (
+								<li 
+									key={index}
+									className={f.stored === 'local' ? 'local-file' : 'remote-file'}			
+								>
+									{f.file.webkitRelativePath || f.file}
+								</li>
 							))}
 						</ul>
 					</ScrollableContainer>
@@ -152,6 +183,7 @@ const Files = () => {
             </div>
 		
 			{ status && <p id='statusParagraph'>{status}</p> }
+			{ loading && <p id='statusParagraph'>Loading ...</p>}
 
 			</Panel>
 		</FilesWrapper>
