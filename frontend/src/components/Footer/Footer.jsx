@@ -2,19 +2,21 @@ import React from 'react';
 import styled from 'styled-components'
 
 const FooterWrapper = styled.footer`
-	display: flex;
-	justify-content: space-evenly;
+	// display: flex;
+	// justify-content: space-evenly;
+	min-height: 1em;
+	
+	padding-left: 4px;
+	margin-left: 10px;
 
-	text-align: center;
+	// text-align: left;
 `;
 
 
-const Footer = () => {
+const Footer = ({loading, status}) => {
 	return (
 		<FooterWrapper>
-			<div>Blame</div>
-			<div>Culpa</div>
-			<div>Culpado</div>
+			<div>{loading ? 'Loading ...' : status}</div>
 		</FooterWrapper>
 	);
 };

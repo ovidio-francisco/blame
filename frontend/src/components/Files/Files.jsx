@@ -12,13 +12,24 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import './styles.css';
 
 
-const Files = () => {
+const Files = ({setLoading, setStatus}) => {
 	const [user] = useAuthState(auth);
-    const [status, setStatus] = useState('');
     const [section, setSection] = useState('');
     const [sections, setSections] = useState([]);
-    const [filesSections, setFilesSections] = useState([]); 
-	const [loading, setLoading] = useState(false);
+    const [filesSection, setFilesSection] = useState([]); 
+	const [selectedFiles, setSelectedFiles] = useState([]);
+	const [visuallyDeletedFiles, setvisuallyDeletedFiles] = useState([]);
+
+	const toggleFileSelection = (file) => {
+		setSelectedFiles(prevSelected => {
+			if (prevSelected.includes(file)) {
+				return prevSelected.filter(f => f !== file);
+			}
+			else {
+				return [...prevSelected, file];
+			}
+		})	
+	}
 
 	const handleFileChange = (event) => {
         const input = event.target;
@@ -26,11 +37,11 @@ const Files = () => {
 
 		const files = selectedFiles.map(f => ({file: f, stored:'local'}));
 
-        setFilesSections(prevFiles => [...prevFiles, ...files]);
+        setFilesSection(prevFiles => [...prevFiles, ...files]);
 	};
 
 	const handleClearFiles = () => {
-		setFilesSections([]);
+		setFilesSection([]);
 	}
 
 	const handleUpload = async () => {
@@ -40,7 +51,7 @@ const Files = () => {
 			return;
 		}
 
-		const localFiles = filesSections.filter(f => f.stored === 'local');
+		const localFiles = filesSection.filter(f => f.stored === 'local');
 		const files = localFiles.map(f => (f.file));
 
 		if (files.length > 0) {
@@ -49,9 +60,7 @@ const Files = () => {
 				const result = await uploadFiles(section, user.email, files); 
 				setStatus(result);
 
-
 				const updatedFileList = await fetchFilesList(section, user.email);
-				// setFilesSections(updatedFileList.map(fileName => ({file: fileName, stored: 'remote'})))
 				updateFilesSection(updatedFileList, 'remote');
 
 			}
@@ -88,7 +97,7 @@ const Files = () => {
 		}
 		else {
 			setSections([]);
-			setFilesSections([]);
+			setFilesSection([]);
 			setSection('');
 		}
 	}, [user]);
@@ -103,7 +112,6 @@ const Files = () => {
 			setLoading(true);
 			try {
 				const filesList = await fetchFilesList(section, user.email);
-				// setFilesSections(filesList.map(fileName=>({file: fileName, stored: 'remote'})));
 				updateFilesSection(filesList, 'remote');
 			}
 			catch (error) {
@@ -118,10 +126,10 @@ const Files = () => {
 		if (section && user) {
 			handleFetchFileList();
 		}
-	}, [user, section]);
+	}, [user, section, setLoading, setStatus]);
 
 	const updateFilesSection = (files, whereis) => {
-		setFilesSections(files.map(fileName=>({file: fileName, stored: whereis})));
+		setFilesSection(files.map(fileName=>({file: fileName, stored: whereis})));
 	}
 
 	return (
@@ -166,10 +174,11 @@ const Files = () => {
 					<label id='filesLabel'>Files:</label>
 					<ScrollableContainer>
 						<ul>
-							{filesSections.map((f, index) => (
+							{filesSection.map((f, index) => (
 								<li 
 									key={index}
-									className={f.stored === 'local' ? 'local-file' : 'remote-file'}			
+									className={`${f.stored === 'local' ? 'local-file' : 'remote-file'} ${selectedFiles.includes(f.file) ? 'selectedFile' : ''}`}			
+									onClick={() => toggleFileSelection(f.file)}
 								>
 									{f.file.webkitRelativePath || f.file}
 								</li>
@@ -181,9 +190,6 @@ const Files = () => {
 				<StyledButton id='btnUpload' onClick={handleUpload}>Upload</StyledButton>
 
             </div>
-		
-			{ status && <p id='statusParagraph'>{status}</p> }
-			{ loading && <p id='statusParagraph'>Loading ...</p>}
 
 			</Panel>
 		</FilesWrapper>

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import Files  from '../Files/Files';
 import Similarities  from '../Similarities/Similarities';
+import Footer from '../Footer/Footer';
 
 const MainWrapper = styled.main`
 	overflow: hidden;
@@ -14,11 +15,16 @@ const MainWrapper = styled.main`
 
 
 const Main = () => {
+	const [loading, setLoading] = useState(false);
+	const [status, setStatus] = useState('');
 	return (
-		<MainWrapper>
-			<Files />
-			<Similarities />
-		</MainWrapper>
+		<>
+			<MainWrapper>
+				<Files setLoading={setLoading} setStatus={setStatus}/>
+				<Similarities />
+			</MainWrapper>
+			<Footer loading={loading} status={status}/>
+		</>
 	);
 }
 
