@@ -16,9 +16,9 @@ const Files = ({setLoading, setStatus}) => {
 	const [user] = useAuthState(auth);
     const [section, setSection] = useState('');
     const [sections, setSections] = useState([]);
-    const [filesSection, setFilesSection] = useState([]); 
+    const [setcionFiles, setSectionFiles] = useState([]); 
 	const [selectedFiles, setSelectedFiles] = useState([]);
-	const [visuallyDeletedFiles, setvisuallyDeletedFiles] = useState([]);
+	const [visuallyDeletedFiles, setVisuallyDeletedFiles] = useState([]);
 
 	const toggleFileSelection = (file) => {
 		setSelectedFiles(prevSelected => {
@@ -37,12 +37,28 @@ const Files = ({setLoading, setStatus}) => {
 
 		const files = selectedFiles.map(f => ({file: f, stored:'local'}));
 
-        setFilesSection(prevFiles => [...prevFiles, ...files]);
+        setSectionFiles(prevFiles => [...prevFiles, ...files]);
 	};
 
 	const handleClearFiles = () => {
-		setFilesSection([]);
+		setSectionFiles([]);
+		setSelectedFiles([]);
+		setVisuallyDeletedFiles([]);
 	}
+
+const handleDeleteSelectedFiles = () => {
+    setVisuallyDeletedFiles((prevFiles) => {
+        const newDeletedFiles = selectedFiles.filter(file => !prevFiles.includes(file));
+        const remainingFiles = prevFiles.filter(file => !selectedFiles.includes(file));
+        return [...remainingFiles, ...newDeletedFiles];
+    });
+
+	setSectionFiles(prevFileSection => {
+		return prevFileSection.filter(f => !selectedFiles.includes(f.file) || f.stored !== 'local');
+	});
+
+    setSelectedFiles([]);
+}
 
 	const handleUpload = async () => {
 		
@@ -51,7 +67,7 @@ const Files = ({setLoading, setStatus}) => {
 			return;
 		}
 
-		const localFiles = filesSection.filter(f => f.stored === 'local');
+		const localFiles = setcionFiles.filter(f => f.stored === 'local');
 		const files = localFiles.map(f => (f.file));
 
 		if (files.length > 0) {
@@ -61,7 +77,7 @@ const Files = ({setLoading, setStatus}) => {
 				setStatus(result);
 
 				const updatedFileList = await fetchFilesList(section, user.email);
-				updateFilesSection(updatedFileList, 'remote');
+				updateSectionFiles(updatedFileList, 'remote');
 
 			}
 			catch (error) {
@@ -97,7 +113,7 @@ const Files = ({setLoading, setStatus}) => {
 		}
 		else {
 			setSections([]);
-			setFilesSection([]);
+			setSectionFiles([]);
 			setSection('');
 		}
 	}, [user]);
@@ -112,7 +128,7 @@ const Files = ({setLoading, setStatus}) => {
 			setLoading(true);
 			try {
 				const filesList = await fetchFilesList(section, user.email);
-				updateFilesSection(filesList, 'remote');
+				updateSectionFiles(filesList, 'remote');
 			}
 			catch (error) {
 				setStatus(error.message);
@@ -128,8 +144,8 @@ const Files = ({setLoading, setStatus}) => {
 		}
 	}, [user, section, setLoading, setStatus]);
 
-	const updateFilesSection = (files, whereis) => {
-		setFilesSection(files.map(fileName=>({file: fileName, stored: whereis})));
+	const updateSectionFiles = (files, whereis) => {
+		setSectionFiles(files.map(fileName=>({file: fileName, stored: whereis})));
 	}
 
 	return (
@@ -155,7 +171,7 @@ const Files = ({setLoading, setStatus}) => {
 
 					<div id='rightButtons'>
 						<i className="fa-solid fa-eraser btn-files" onClick={handleClearFiles}></i>
-						<i className="fa-solid fa-xmark btn-files"></i>
+						<i className="fa-solid fa-xmark btn-files" onClick={handleDeleteSelectedFiles}></i>
 					</div>
 				</div>
 
@@ -174,10 +190,14 @@ const Files = ({setLoading, setStatus}) => {
 					<label id='filesLabel'>Files:</label>
 					<ScrollableContainer>
 						<ul>
-							{filesSection.map((f, index) => (
+							{setcionFiles.map((f, index) => (
 								<li 
 									key={index}
-									className={`${f.stored === 'local' ? 'local-file' : 'remote-file'} ${selectedFiles.includes(f.file) ? 'selectedFile' : ''}`}			
+									className={`
+										${f.stored === 'local' ? 'local-file' : 'remote-file'} 
+										${selectedFiles.includes(f.file) ? 'selectedFile' : ''}
+										${visuallyDeletedFiles.includes(f.file) ? 'visuallyDeleted' : ''}
+										`}			
 									onClick={() => toggleFileSelection(f.file)}
 								>
 									{f.file.webkitRelativePath || f.file}

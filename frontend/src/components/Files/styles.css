@@ -13,6 +13,12 @@
 	color: #000;
 }
 
+.visuallyDeleted {
+	text-decoration: line-through;
+	color: red;
+	opacity: 0.6;
+}
+
 #filesListContainer ul li {
 	cursor: pointer;
 }
