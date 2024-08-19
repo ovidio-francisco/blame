@@ -7,7 +7,6 @@
     color: black;
 }
 
-
 .selectedFile {
 	background-color: #d3d3d3;
 	color: #000;
@@ -24,5 +23,8 @@
 }
 
 #filesListContainer ul li:hover {
-	background-color: #e3e3e3;
+	color: #535353;
 }
+
+
+

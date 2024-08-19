@@ -46,19 +46,19 @@ const Files = ({setLoading, setStatus}) => {
 		setVisuallyDeletedFiles([]);
 	}
 
-const handleDeleteSelectedFiles = () => {
-    setVisuallyDeletedFiles((prevFiles) => {
-        const newDeletedFiles = selectedFiles.filter(file => !prevFiles.includes(file));
-        const remainingFiles = prevFiles.filter(file => !selectedFiles.includes(file));
-        return [...remainingFiles, ...newDeletedFiles];
-    });
+	const handleDeleteSelectedFiles = () => {
+		setVisuallyDeletedFiles((prevFiles) => {
+			const newDeletedFiles = selectedFiles.filter(file => !prevFiles.includes(file));
+			const remainingFiles = prevFiles.filter(file => !selectedFiles.includes(file));
+			return [...remainingFiles, ...newDeletedFiles];
+		});
 
-	setSectionFiles(prevFileSection => {
-		return prevFileSection.filter(f => !selectedFiles.includes(f.file) || f.stored !== 'local');
-	});
+		setSectionFiles(prevFileSection => {
+			return prevFileSection.filter(f => !selectedFiles.includes(f.file) || f.stored !== 'local');
+		});
 
-    setSelectedFiles([]);
-}
+		setSelectedFiles([]);
+	}
 
 	const handleUpload = async () => {
 		
@@ -136,6 +136,7 @@ const handleDeleteSelectedFiles = () => {
 			}
 			finally {
 				setLoading(false);
+				setVisuallyDeletedFiles([]);
 			}
 		}
 
