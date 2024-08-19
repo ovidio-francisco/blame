@@ -70,6 +70,12 @@ const Files = ({setLoading, setStatus}) => {
 		const localFiles = setcionFiles.filter(f => f.stored === 'local');
 		const files = localFiles.map(f => (f.file));
 
+
+
+		// Delete the visuallyDeleted in the server
+
+
+
 		if (files.length > 0) {
 			setLoading(true);
 			try {
@@ -78,7 +84,6 @@ const Files = ({setLoading, setStatus}) => {
 
 				const updatedFileList = await fetchFilesList(section, user.email);
 				updateSectionFiles(updatedFileList, 'remote');
-
 			}
 			catch (error) {
 				setStatus(error.message);	
