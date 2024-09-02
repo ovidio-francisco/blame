@@ -4,6 +4,7 @@ const FILES_UPLOAD_URL  = '/storage/files/upload';
 const FILES_LIST_URL    = '/storage/files/list';
 const SECTIONS_LIST_URL = '/storage/sections/list';
 
+// TODO: renomedar para compareFiles
 export const uploadFiles = async (section, user, files) => {
 
 	try {
@@ -27,6 +28,21 @@ export const uploadFiles = async (section, user, files) => {
 		throw new Error(`Error uploading ${error.message}`);
 	}
 };
+
+
+export const deleteRemoteFiles = async (section, user, files) => {
+	console.log("Deleting: ", files);
+
+	try {
+		const formData = new FormData();
+		formData.append('')
+	}
+	catch(error) {
+		throw new Error(`Error deleting files ${error.message}`);
+	}
+
+}
+
 
 export const fetchFilesList = async (section, user) => {
 	try {
@@ -73,6 +89,7 @@ export const fetchSections = async (user) => {
 
 	// return ['Turma RRR', 'Turma AAA', 'Turma LLL', 'Turma OOO'];
 }
+
 
 
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../firebase/firebase';
-import { fetchFilesList, uploadFiles, fetchSections } from '../../utils/apiUtils';
+import { fetchFilesList, uploadFiles, fetchSections, deleteRemoteFiles } from '../../utils/apiUtils';
 
 import Panel from '../Panel/Panel'
 import ScrollableContainer  from '../ScrollableContainer/ScrollableContainer';
@@ -60,7 +60,7 @@ const Files = ({setLoading, setStatus}) => {
 		setSelectedFiles([]);
 	}
 
-	const handleUpload = async () => {
+	const handleCompareFiles = async () => {
 		
 		if(!user) {
 			setStatus('User not logged in');
@@ -71,9 +71,28 @@ const Files = ({setLoading, setStatus}) => {
 		const files = localFiles.map(f => (f.file));
 
 
-
 		// Delete the visuallyDeleted in the server
+		//
+			// Ao invez de ter uma funcionalidade de deletetar arquivos
+		// apenas enviar a lista de aquivos listados.
+			// No server, caso um arquivo não esteja listado, remover.
 
+		if(visuallyDeletedFiles.length > 0) {
+			console.log(visuallyDeletedFiles);
+			setLoading(true);
+
+			try {
+				const result = await deleteRemoteFiles(section, user.email, visuallyDeletedFiles);
+				setStatus(result);
+			}
+			catch(error) {
+				setStatus(error.message);
+				console.error('Error: ', error);
+			}
+			finally {
+				setLoading(false);
+			}
+		} 
 
 
 		if (files.length > 0) {
@@ -82,6 +101,7 @@ const Files = ({setLoading, setStatus}) => {
 				const result = await uploadFiles(section, user.email, files); 
 				setStatus(result);
 
+				// TODO: baixar arquivos, se houver updload ou deleção
 				const updatedFileList = await fetchFilesList(section, user.email);
 				updateSectionFiles(updatedFileList, 'remote');
 			}
@@ -213,7 +233,7 @@ const Files = ({setLoading, setStatus}) => {
 					</ScrollableContainer>
 				</div>
 					
-				<StyledButton id='btnUpload' onClick={handleUpload}>Upload</StyledButton>
+				<StyledButton id='btnUpload' onClick={handleCompareFiles}>Upload</StyledButton>
 
             </div>
 
