@@ -20,6 +20,20 @@ const Files = ({setLoading, setStatus}) => {
 	const [selectedFiles, setSelectedFiles] = useState([]);
 	const [visuallyDeletedFiles, setVisuallyDeletedFiles] = useState([]);
 
+	const [newSectionName, setNewSectionName] = useState('');
+	const [isAddingSection, setIsAddingSection] = useState(false);
+
+
+	const handleAddSection = () => {
+		if (newSectionName.trim()) {
+			setSections([...sections, newSectionName]); // Add new section to the list
+			setSection(newSectionName); // Optionally set it as the current section
+			setNewSectionName(''); // Clear input
+			setIsAddingSection(false); // Hide input field
+		}
+	};
+
+
 	const toggleFileSelection = (file) => {
 		setSelectedFiles(prevSelected => {
 			if (prevSelected.includes(file)) {
@@ -181,7 +195,11 @@ const Files = ({setLoading, setStatus}) => {
             <div id='filesControls'>
 
 				<div id="toolButtons">
+
 					<div id='leftButtons'>
+
+						<i className="fa-solid fa-plus btn-files" onClick={() => setIsAddingSection(true)}></i>
+
 						<i className="fas fa-upload btn-files" aria-label="Select files to upload" onClick={() => document.getElementById('fileDirectoryInput').click()}></i>
 						<input 
 							type="file" 
@@ -201,6 +219,17 @@ const Files = ({setLoading, setStatus}) => {
 					</div>
 				</div>
 
+
+				{isAddingSection && 
+					<div>
+						<input type="text" placeholder="New section name" value={newSectionName} onChange={(e) => setNewSectionName(e.target.value)} />
+						<button onClick={handleAddSection}>Add Section</button>
+						<button onClick={() => setIsAddingSection(false)}>Cancel</button>
+					</div>
+				}
+
+
+
 				<div id='sectionControls'>
 					<label htmlFor="sectionInput">Section</label>
 					<select id="sectionInput" value={section} onChange={e => setSection(e.target.value)} >
@@ -211,6 +240,7 @@ const Files = ({setLoading, setStatus}) => {
 						))}
 					</select>
 				</div>
+
 
 				<div id='filesListContainer'>
 					<label id='filesLabel'>Files:</label>
